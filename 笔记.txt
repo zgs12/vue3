@@ -1,0 +1,9 @@
+vue2的深度代理是通过一次性便利完后给getset vue3则是访问哪个才去代理，性能要比vue2的好
+
+effect函数 执行后会执行run函数，函数里面取值的话会触发proxy的get方法，然后就会对这个属性对应一个set数组，
+把对应的effect依赖添加进去，等之后触发proxy的set时，就是执行之前收集的effect依赖的run来更新页面。
+
+computed方法是创建时创建一个effect的类，不过不执行，当在页面中取值时才会触发回调，并将dirty设置为false，
+并且会把取值时的effect添加到computed的dep依赖中，下次再取值时，dirty为false，就不会再执行effect的run函数
+，而是直接返回上次的结果，当依赖的值发生变化时，dirty设置为true，再次取值时，
+就会重新执行effect的run函数，然后返回新的值，并更新dirty为false。

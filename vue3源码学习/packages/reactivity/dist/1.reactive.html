@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script type="module">
+    import { reactive, effect, watch, toRef, watchEffect, toRefs } from './reactivity.js'
+    const state = reactive({ name: 'zf', age: 12, flag: true })
+    // const name = toRef(state, 'name')
+    const { name, age } = toRefs(state)
+    // const state2 = reactive(state)
+    // console.log(state === state2)
+    // console.log(state.name)
+    // state.name = 'jw'
+    // console.log(state.name)
+    // state.age++
+    // console.log(state.age)
+    // let run1
+    // let run2
+    // run1 = effect(() => {
+    //     state.flag
+    //     run2 = effect(() => {
+    //         state.flag
+    //     })
+    // })
+    // state.flag
+
+    //    setTimeout(()=>{
+    //        state.flag = false
+    //    },1000)
+    // watch(state, (newValue, oldValue,onCleanup) => {
+    //     let flag = true
+    //     onCleanup(() => {
+    //         flag = false
+    //     })
+    //     if (flag) {
+    //         console.log(newValue, oldValue,'123')
+    //     }
+    // })
+    // state.flag = false
+    // state.flag = true
+    watchEffect(() => {
+        console.log(name.value)
+    })
+    name.value = 'jw'
+</script>
+
+</html>
