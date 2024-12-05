@@ -2,6 +2,53 @@
 var isObject = (val) => val !== null && typeof val === "object";
 var isFunction = (val) => typeof val === "function";
 
+// packages/reactivity/src/effectScope.ts
+var activeEffectScope = null;
+var EffectScope = class {
+  constructor(detached) {
+    this.active = true;
+    this.effects = [];
+    this.parent = null;
+    if (!detached && activeEffectScope) {
+      activeEffectScope.scopes || (activeEffectScope.scopes = []).push(this);
+    }
+  }
+  run(fn) {
+    if (this.active) {
+      try {
+        this.parent = activeEffectScope;
+        activeEffectScope = this;
+        return fn();
+      } finally {
+        activeEffectScope = this.parent;
+        this.parent = null;
+      }
+    }
+  }
+  stop() {
+    if (this.active) {
+      this.active = false;
+      const { effects } = this;
+      for (let i = 0; i < effects.length; i++) {
+        effects[i].stop();
+      }
+      if (this.scopes) {
+        for (let i = 0; i < this.scopes.length; i++) {
+          this.scopes[i].stop();
+        }
+      }
+    }
+  }
+};
+function recordEffectScope(effect2) {
+  if (activeEffectScope && activeEffectScope.active) {
+    activeEffectScope.effects.push(effect2);
+  }
+}
+function effectScope(detached = false) {
+  return new EffectScope(detached);
+}
+
 // packages/reactivity/src/effect.ts
 var activeEffect = void 0;
 function cleanupEffect(effect2) {
@@ -18,6 +65,7 @@ var ReactiveEffect = class {
     this.parent = void 0;
     this.active = true;
     this.deps = [];
+    recordEffectScope(this);
   }
   //记录依赖
   run() {
@@ -276,14 +324,40 @@ function toRefs(object) {
   }
   return res;
 }
+function proxyRefs(objectWithRefs) {
+  return new Proxy(objectWithRefs, {
+    get(target, key, receiver) {
+      let v = Reflect.get(target, key, receiver);
+      return v.__v_isRef ? v.value : v;
+    },
+    set(target, key, value, receiver) {
+      const oldValue = target[key];
+      if (oldValue.__v_isRef) {
+        oldValue.value = value;
+        return true;
+      } else {
+        return Reflect.set(target, key, value, receiver);
+      }
+    }
+  });
+}
+function isRef(r) {
+  return !!(r && r.__v_isRef);
+}
 export {
+  EffectScope,
   ReactiveEffect,
   ReactiveFlags,
   activeEffect,
+  activeEffectScope,
   computed,
   effect,
+  effectScope,
   isReactive,
+  isRef,
+  proxyRefs,
   reactive,
+  recordEffectScope,
   ref,
   toRef,
   toRefs,

@@ -11,10 +11,16 @@
 
 </body>
 <script type="module">
-    import { reactive, effect, watch, toRef, watchEffect, toRefs } from './reactivity.js'
+    import { reactive, effect, watch, toRef, watchEffect, toRefs, effectScope } from './reactivity.js'
     const state = reactive({ name: 'zf', age: 12, flag: true })
     // const name = toRef(state, 'name')
-    const { name, age } = toRefs(state)
+    // const { name, age } = toRefs(state)
+    // const age1 = effect(() => {
+    //     state.age
+    //     console.log(state.age)
+    // })
+    // age1.effect.stop()
+    // state.age++
     // const state2 = reactive(state)
     // console.log(state === state2)
     // console.log(state.name)
@@ -35,7 +41,7 @@
     //    setTimeout(()=>{
     //        state.flag = false
     //    },1000)
-    // watch(state, (newValue, oldValue,onCleanup) => {
+    // watch(() => state.flag, (newValue, oldValue,onCleanup) => {
     //     let flag = true
     //     onCleanup(() => {
     //         flag = false
@@ -44,12 +50,51 @@
     //         console.log(newValue, oldValue,'123')
     //     }
     // })
+    // watch(() => state.flag, (newValue, oldValue) => {
+
+    //     console.log(newValue, oldValue, '123')
+
+    // })
     // state.flag = false
     // state.flag = true
-    watchEffect(() => {
-        console.log(name.value)
+    // watchEffect(() => {
+    //     console.log(name.value)
+    // })
+    // state.flag = false
+    const scope = effectScope()
+    scope.run(() => {
+        const state = reactive({ name: 'zf', age: 12, flag: true })
+        const name = toRef(state, 'name')
+        watchEffect(() => {
+            console.log(name.value)
+        })
+        setTimeout(() => {
+            state.name = 'zgs'
+        }, 2000)
+        const scope = effectScope()
+        scope.run(() => {
+            const state = reactive({ name: 'zf', age: 12, flag: true })
+            const name = toRef(state, 'name')
+            watchEffect(() => {
+                console.log(name.value)
+            })
+            setTimeout(() => {
+                state.name = 'zgs'
+            }, 2000)
+            const scope = effectScope(true)
+            scope.run(() => {
+                const state = reactive({ name: 'zf', age: 12, flag: true })
+                const name = toRef(state, 'name')
+                watchEffect(() => {
+                    console.log(name.value)
+                })
+                setTimeout(() => {
+                    state.name = 'zgs'
+                }, 2000)
+            })
+        })
     })
-    name.value = 'jw'
+    scope.stop()
 </script>
 
 </html>

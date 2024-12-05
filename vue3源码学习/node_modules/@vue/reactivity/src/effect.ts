@@ -1,3 +1,5 @@
+import { recordEffectScope } from "./effectScope"
+
 export let activeEffect = undefined
 function cleanupEffect(effect) {
     for (let i = 0; i < effect.deps.length; i++) {
@@ -8,7 +10,9 @@ function cleanupEffect(effect) {
     effect.deps.length = 0
 }
 export class ReactiveEffect {
-    constructor(private fn, private scheduler) { }
+    constructor(private fn, private scheduler) { 
+        recordEffectScope(this)
+    }
     parent = undefined
     active = true
     deps = [] //记录依赖
