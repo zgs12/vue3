@@ -12,6 +12,7 @@ function traverse(value, s = new Set()) {
 }
 
 function doWatch(source, cb, { immediate } = {} as any) {
+
     let getter
     if (isReactive(source)) {
         // 深度监听

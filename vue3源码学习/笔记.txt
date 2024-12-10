@@ -7,3 +7,5 @@ computed方法是创建时创建一个effect的类，不过不执行，当在页
 并且会把取值时的effect添加到computed的dep依赖中，下次再取值时，dirty为false，就不会再执行effect的run函数
 ，而是直接返回上次的结果，当依赖的值发生变化时，dirty设置为true，再次取值时，
 就会重新执行effect的run函数，然后返回新的值，并更新dirty为false。
+
+effect在执行run的时候会自动给activeEffect赋值，然后取值时就会触发get方法，就会把activeEffect添加到依赖中，当触发set方法时，就会执行依赖的run方法，更新页面。

@@ -155,6 +155,7 @@ var mutableHandlers = {
     return res;
   },
   set(target, key, value, receiver) {
+    debugger;
     let oldValue = target[key];
     const r = Reflect.set(target, key, value, receiver);
     if (oldValue !== value) {
@@ -218,6 +219,7 @@ var ComputedRefImpl = class {
   }
 };
 function computed(getterOrOptions) {
+  debugger;
   let getter;
   let setter;
   getter = isFunction(getterOrOptions) ? getterOrOptions : getterOrOptions.get;

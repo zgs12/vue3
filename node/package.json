@@ -1,0 +1,16 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "main": "module.js",
+  "scripts": {
+    "dev": "cross-env a=1 node ./module.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "commander": "^12.1.0",
+    "cross-env": "^7.0.3"
+  }
+}

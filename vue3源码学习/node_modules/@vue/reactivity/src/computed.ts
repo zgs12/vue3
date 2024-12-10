@@ -31,6 +31,7 @@ class ComputedRefImpl {
     }
 }
 export function computed(getterOrOptions) {
+    debugger
     // 根据传入的参数类型，决定调用getter还是options
     let getter
     let setter

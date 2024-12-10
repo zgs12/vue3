@@ -17,6 +17,7 @@ export class ReactiveEffect {
     active = true
     deps = [] //记录依赖
     run() {
+        
         if (!this.active) {
             return this.fn()
         }

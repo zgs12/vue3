@@ -17,6 +17,7 @@ export const mutableHandlers = {
         return res
     },
     set(target, key, value, receiver) {
+        debugger
         let oldValue = target[key]
         // 拦截设置属性
         const r = Reflect.set(target, key, value, receiver)
