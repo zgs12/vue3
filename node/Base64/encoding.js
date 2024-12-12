@@ -32,3 +32,6 @@ let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 console.log(str[57]+str[27]+str[34]+str[5])
 
 console.log(0x5E05.toString(2))
+console.log(Buffer.from("帅").toString("base64"))
+
+
